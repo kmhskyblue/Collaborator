@@ -14,6 +14,12 @@ company_values = {
 }
 
 # 🧠 GPT 활용 함수
+import streamlit as st
+from openai import OpenAI
+
+# 최신 방식: OpenAI 인스턴스 생성
+client = OpenAI(api_key="your-openai-api-key")
+
 def generate_cover_letter(reason, background, experience, company):
     value_keywords = ", ".join(company_values.get(company, []))
     prompt = f"""
@@ -31,13 +37,12 @@ def generate_cover_letter(reason, background, experience, company):
     형식은 항목별 문단 구성으로 해줘.
     """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.7
     )
     return response.choices[0].message.content.strip()
-
 
 def generate_interview_questions(reason, background, experience, company):
     prompt = f"""
@@ -51,7 +56,7 @@ def generate_interview_questions(reason, background, experience, company):
     형식: 번호를 매겨서 간단하게 출력해줘.
     """
 
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[{"role": "user", "content": prompt}],
         temperature=0.5
