@@ -14,7 +14,7 @@ if api_key:
     reason = st.text_area("1. 지원 동기")
     background = st.text_area("2. 성장 과정")
     experience = st.text_area("3. 직무 관련 경험")
-    company = st.selectbox("4. 지원 기업", ["삼성전자", "카카오", "LG화학"])
+    company = st.selectbox("4. 지원 기업", ["삼성전자", "LG전자", "SK하이닉스","현대자동차","기아","카카오","네이버","롯데","포스코","CJ"])
 
     # 인재상 샘플
     company_values = {
