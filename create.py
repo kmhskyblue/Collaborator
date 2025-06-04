@@ -1,23 +1,13 @@
 import streamlit as st
 from openai import OpenAI
 
-st.title("🧠 AI 자기소개서 생성기")
+st.title("🧑‍💼 AI 자기소개서 에세이 생성기")
 
-# 1️⃣ API 키 입력 받기
-api_key = st.text_input("🔑 OpenAI API 키를 입력하세요:", type="password")
+# 1. OpenAI API 키 입력
+api_key = st.text_input("🔑 OpenAI API 키를 입력하세요", type="password")
 
-# 키가 입력되어야 작동하도록 조건 처리
-if api_key:
-    client = OpenAI(api_key=api_key)
-
-    # 자소서 입력 UI
-    reason = st.text_area("1. 지원 동기")
-    background = st.text_area("2. 성장 과정")
-    experience = st.text_area("3. 직무 관련 경험")
-    company = st.selectbox("4. 지원 기업", ["삼성전자", "LG전자", "SK하이닉스","현대자동차","기아","카카오","네이버","롯데","포스코","CJ"])
-
-    # 인재상 샘플
-    company_values = {
+# 2. 기업별 인재상 데이터
+company_values = {
     "삼성전자": ["도전정신", "창의성", "글로벌 역량"],
     "LG전자": ["고객지향", "자율과 책임", "지속적 혁신"],
     "SK하이닉스": ["패기", "협력", "지속가능한 성장"],
@@ -39,60 +29,56 @@ if api_key:
     "삼성바이오로직스": ["정직", "혁신", "책임의식"]
 }
 
+if not api_key:
+    st.warning("⚠️ OpenAI API 키를 입력해주세요.")
+    st.stop()
 
-    def generate_cover_letter():
-        value_keywords = ", ".join(company_values.get(company, []))
-        prompt = f"""
-        아래 내용을 기반으로 {company} 인재상({value_keywords})을 반영한 자기소개서를 작성해줘.
+client = OpenAI(api_key=api_key)
 
-        [지원동기] {reason}
-        [성장과정] {background}
-        [직무경험] {experience}
-
-        항목별 문단으로 구성해줘.
-        """
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7
-        )
-        return response.choices[0].message.content.strip()
-
-    def generate_interview_questions():
-        prompt = f"""
-        다음 정보를 바탕으로 예상 면접 질문 5개를 생성해줘.
-
-        [지원 기업]: {company}
-        [지원 동기]: {reason}
-        [성장 과정]: {background}
-        [직무 경험]: {experience}
-        """
-        response = client.chat.completions.create(
-            model="gpt-4",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.5
-        )
-        return response.choices[0].message.content.strip()
-
-    if st.button("🚀 자기소개서 및 질문 생성"):
-        with st.spinner("AI가 자소서를 작성 중입니다..."):
-            cover_letter = generate_cover_letter()
-            questions = generate_interview_questions()
-
-        st.subheader("📄 생성된 자기소개서")
-        st.write(cover_letter)
-
-        st.subheader("🎤 예상 면접 질문")
-        st.write(questions)
-else:
-    st.warning("⚠️ OpenAI API 키를 입력해 주세요.")
-
-
-# ✅ 1. 기업 선택
+# 3. 기업 선택
 company = st.selectbox("📌 지원할 기업을 선택하세요", list(company_values.keys()))
 
-# ✅ 2. 해당 기업의 인재상 출력
+# 4. 인재상 보여주기
 if company:
     st.markdown(f"### 🏢 {company}의 인재상")
     for v in company_values[company]:
         st.markdown(f"- {v}")
+
+# 5. 자기소개서 작성 입력폼
+st.header("📝 자기소개서 작성 입력")
+
+reason = st.text_area("1. 지원 동기", height=100)
+background = st.text_area("2. 성장 과정", height=100)
+experience = st.text_area("3. 직무 관련 경험", height=100)
+
+def generate_cover_letter(reason, background, experience, company):
+    prompt = f"""
+아래 내용을 바탕으로 자연스럽고 진솔한 에세이 형식의 자기소개서를 작성해 주세요.
+각 항목은 하나의 문단으로 만들고, 문단과 문단 사이에는 부드러운 연결 문장을 넣어 글의 흐름이 자연스럽게 이어지도록 해주세요.
+너무 딱딱하거나 공식적인 표현보다는 개인적인 경험과 감정을 담아 진짜 이야기를 듣는 느낌이 들게 해주세요.
+
+[지원 기업]: {company}
+[지원 동기]
+{reason}
+
+[성장 과정]
+{background}
+
+[직무 경험]
+{experience}
+"""
+    response = client.chat.completions.create(
+        model="gpt-4",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0.8
+    )
+    return response.choices[0].message.content.strip()
+
+if st.button("🚀 에세이 자기소개서 생성"):
+    if not (reason and background and experience):
+        st.error("모든 입력란을 채워주세요.")
+    else:
+        with st.spinner("자기소개서를 작성 중입니다..."):
+            cover_letter = generate_cover_letter(reason, background, experience, company)
+        st.subheader("📄 생성된 자기소개서 (에세이 형식)")
+        st.write(cover_letter)
