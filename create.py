@@ -69,3 +69,14 @@ if api_key:
         st.write(questions)
 else:
     st.warning("⚠️ OpenAI API 키를 입력해 주세요.")
+
+
+company = st.selectbox("지원 기업을 선택하세요", list(company_values.keys()))
+
+# 인재상 출력
+if company:
+    values = company_values[company]
+    st.markdown(f"### 🏢 {company}의 인재상")
+    for v in values:
+        st.markdown(f"- {v}")
+
