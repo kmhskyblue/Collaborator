@@ -12,7 +12,6 @@ else:
     st.warning("API 키를 입력해주세요.")
     st.stop()
 
-
 # 2. 기업별 인재상 데이터
 company_values = {
     "삼성전자": ["도전정신", "창의성", "글로벌 역량"],
