@@ -4,7 +4,7 @@ import os
 
 st.set_page_config(page_title="AI 자기소개서 생성기", page_icon="🧑‍💼")
 
-st.title("🧑‍💼 AI 자기소개서 에세이 생성기")
+st.title("🧑‍💼 AI 자기소개서 생성기")
 
 # 1. OpenAI API 키 입력
 api_key = st.text_input("🔑 OpenAI API 키를 입력하세요", type="password")
@@ -86,6 +86,6 @@ if st.button("🚀 에세이 자기소개서 생성"):
     else:
         with st.spinner("자기소개서를 작성 중입니다..."):
             cover_letter = generate_cover_letter(reason, background, experience, company)
-        st.subheader("📄 생성된 자기소개서 (에세이 형식)")
+        st.subheader("📄 생성된 자기소개서")
         st.write(cover_letter)
         st.download_button("📥 자기소개서 다운로드", cover_letter, file_name="cover_letter.txt")
