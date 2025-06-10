@@ -5,12 +5,6 @@ st.title("🧑‍💼 AI 자기소개서 에세이 생성기")
 
 # 1. OpenAI API 키 입력
 api_key = st.text_input("🔑 OpenAI API 키를 입력하세요", type="password")
-if api_key:
-    api_key = api_key.strip()  # 앞뒤 공백 제거
-    client = OpenAI(api_key=api_key)
-else:
-    st.warning("API 키를 입력해주세요.")
-    st.stop()
 
 # 2. 기업별 인재상 데이터
 company_values = {
