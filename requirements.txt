@@ -1,4 +1,2 @@
 streamlit
 openai
-fpdf
-pymupdf==1.21.1
