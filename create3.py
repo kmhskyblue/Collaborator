@@ -1,5 +1,8 @@
 import streamlit as st
 from openai import OpenAI
+import os
+
+st.set_page_config(page_title="AI 자기소개서 생성기", page_icon="🧑‍💼")
 
 st.title("🧑‍💼 AI 자기소개서 에세이 생성기")
 
@@ -47,17 +50,20 @@ if company:
 # 5. 자기소개서 작성 입력폼
 st.header("📝 자기소개서 작성 입력")
 
-reason = st.text_area("1. 지원 동기", height=100)
-background = st.text_area("2. 성장 과정", height=100)
-experience = st.text_area("3. 직무 관련 경험", height=100)
+reason = st.text_area("1. 지원 동기 (왜 이 회사를 선택했나요?)", height=100)
+background = st.text_area("2. 성장 과정 (자신의 가치관이나 성격이 형성된 이야기)", height=100)
+experience = st.text_area("3. 직무 관련 경험 (직무와 연결되는 구체적 사례)", height=100)
 
 def generate_cover_letter(reason, background, experience, company):
+    traits = ", ".join(company_values[company])
     prompt = f"""
 아래 내용을 바탕으로 자연스럽고 진솔한 에세이 형식의 자기소개서를 작성해 주세요.
 각 항목은 하나의 문단으로 만들고, 문단과 문단 사이에는 부드러운 연결 문장을 넣어 글의 흐름이 자연스럽게 이어지도록 해주세요.
 너무 딱딱하거나 공식적인 표현보다는 개인적인 경험과 감정을 담아 진짜 이야기를 듣는 느낌이 들게 해주세요.
 
 [지원 기업]: {company}
+[기업 인재상]: {traits}
+
 [지원 동기]
 {reason}
 
@@ -76,9 +82,10 @@ def generate_cover_letter(reason, background, experience, company):
 
 if st.button("🚀 에세이 자기소개서 생성"):
     if not (reason and background and experience):
-        st.error("모든 입력란을 채워주세요.")
+        st.error("❗ 모든 입력란을 채워주세요.")
     else:
         with st.spinner("자기소개서를 작성 중입니다..."):
             cover_letter = generate_cover_letter(reason, background, experience, company)
         st.subheader("📄 생성된 자기소개서 (에세이 형식)")
         st.write(cover_letter)
+        st.download_button("📥 자기소개서 다운로드", cover_letter, file_name="cover_letter.txt")
