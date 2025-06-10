@@ -4,7 +4,7 @@ import fitz  # PyMuPDF
 from pptx import Presentation
 
 st.set_page_config(page_title="AI 자기소개서 생성기", page_icon="🧑‍💼")
-st.title("🧑‍💼 AI 자기소개서 에세이 생성기")
+st.title("🧑‍💼 AI 자기소개서 생성기")
 
 # 🔐 OpenAI API Key 입력
 api_key = st.text_input("🔑 OpenAI API 키를 입력하세요", type="password")
@@ -71,7 +71,7 @@ if uploaded_file:
         st.success("✅ PDF에서 텍스트 추출 완료.")
     elif uploaded_file.type == "application/vnd.openxmlformats-officedocument.presentationml.presentation":
         pdf_text = extract_text_from_pptx(uploaded_file)
-        st.success("✅ PPTX에서 텍스트 추출 완료.")
+        st.success("✅ PPT에서 텍스트 추출 완료.")
     else:
         st.error("❌ 지원하지 않는 파일 형식입니다.")
 
